@@ -4,10 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import {
   Map as MapLibreMap,
   NavigationControl,
+  setWorkerUrl,
   type GeoJSONSource,
   type MapGeoJSONFeature,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// Next.js's bundler (Turbopack and webpack alike) fails to correctly serve
+// maplibre-gl's Worker script when it's resolved via the library's own
+// `new URL(..., import.meta.url)` — it 404s in production. Self-hosting the
+// worker (+ its relative "./maplibre-gl-shared.mjs" import) as plain static
+// files in public/ and pointing at them explicitly sidesteps that entirely.
+if (typeof window !== "undefined") {
+  setWorkerUrl("/maplibre-gl-worker.mjs");
+}
 import type { StationObservation } from "@/lib/cwaObservations";
 import type { TyphoonStatus } from "@/lib/typhoonParser";
 import { maplibreStepExpression, type LayerKey } from "@/lib/colorScales";
