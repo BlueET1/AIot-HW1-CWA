@@ -1,0 +1,14 @@
+# Environment Variables
+.env
+
+# Virtual Environment
+venv/
+.venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Local Data Cache
+data/raw_cwa.json
+# data/data.db
