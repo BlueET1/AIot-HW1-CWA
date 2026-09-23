@@ -97,7 +97,7 @@ def build_map(day_df: pd.DataFrame) -> folium.Map:
     m = folium.Map(
         location=[23.7, 121.0],
         zoom_start=7,
-        tiles="cartodbpositron",
+        tiles="OpenStreetMap",
         control_scale=True,
     )
 
