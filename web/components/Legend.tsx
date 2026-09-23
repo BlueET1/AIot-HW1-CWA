@@ -1,4 +1,4 @@
-import { SCALES, type LayerKey } from "@/lib/colorScales";
+import { SCALES, NO_DATA_COLOR, type LayerKey } from "@/lib/colorScales";
 
 const TITLES: Record<LayerKey, string> = {
   temp: "氣溫 °C",
@@ -19,6 +19,10 @@ export default function Legend({ layer }: { layer: LayerKey }) {
             {s.label}
           </div>
         ))}
+        <div className="flex items-center gap-2 text-xs text-white/50">
+          <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: NO_DATA_COLOR }} />
+          無資料
+        </div>
       </div>
     </div>
   );

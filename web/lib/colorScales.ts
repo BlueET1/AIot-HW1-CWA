@@ -55,9 +55,11 @@ export const SCALES: Record<LayerKey, ScaleStop[]> = {
   wind: WIND_SCALE,
 };
 
+export const NO_DATA_COLOR = "#5b5b58";
+
 export function colorFor(layer: LayerKey, value: number | null | undefined): string {
   if (value === null || value === undefined || Number.isNaN(value)) {
-    return "#5b5b58";
+    return NO_DATA_COLOR;
   }
   const scale = SCALES[layer];
   let color = scale[0].color;
@@ -67,13 +69,17 @@ export function colorFor(layer: LayerKey, value: number | null | undefined): str
   return color;
 }
 
-/** MapLibre `step` expression driven by a numeric GeoJSON property. */
+/**
+ * MapLibre `case`+`step` expression driven by a numeric GeoJSON property.
+ * Sensors with no reading (property is `null`) render as NO_DATA_COLOR
+ * instead of silently falling into the coldest/lowest tier.
+ */
 export function maplibreStepExpression(layer: LayerKey, property: string): unknown[] {
   const scale = SCALES[layer];
-  const expr: unknown[] = ["step", ["coalesce", ["get", property], -9999]];
-  expr.push(scale[0].color);
+  const step: unknown[] = ["step", ["get", property]];
+  step.push(scale[0].color);
   for (let i = 1; i < scale.length; i++) {
-    expr.push(scale[i].min, scale[i].color);
+    step.push(scale[i].min, scale[i].color);
   }
-  return expr;
+  return ["case", ["==", ["get", property], null], NO_DATA_COLOR, step];
 }

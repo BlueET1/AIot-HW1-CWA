@@ -4,13 +4,19 @@ function fmt(v: number | null, digits = 1): string {
   return v === null || v === undefined ? "--" : v.toFixed(digits);
 }
 
+const TAIPEI_TIME_FORMAT = new Intl.DateTimeFormat("zh-Hant-TW", {
+  timeZone: "Asia/Taipei",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+
 function formatTime(iso: string | null): string {
   if (!iso) return "--";
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} 下午${pad(d.getHours())}:${pad(
-    d.getMinutes()
-  )}`;
+  return TAIPEI_TIME_FORMAT.format(new Date(iso));
 }
 
 interface Props {
