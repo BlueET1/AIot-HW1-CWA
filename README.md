@@ -10,6 +10,10 @@
 [![CWA Open Data](https://img.shields.io/badge/CWA-Open%20Data-0077BE?style=flat)](https://opendata.cwa.gov.tw/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+**🔗 線上展示 (Live Demo)：<https://aiot-hw1-cwa-xybjhrhdrcpj7gjg7yqbtr.streamlit.app/>**
+
+> 若開啟時顯示 "This app has gone to sleep"，點一下 **Yes, get this app back up!** 稍候約 30 秒即可喚醒（Streamlit Community Cloud 免費方案會讓閒置的應用休眠）。
+
 ---
 
 ## 📖 專案簡介 (Overview)
@@ -186,6 +190,8 @@ streamlit run app.py
 
 ## 💡 未來延伸 (Future Work & Extensions)
 
+- [x] **台灣即時氣象地圖**：以本專案為基礎的延伸作品，改用 CWA 即時觀測資料（363 個測站）搭配 MapLibre GL 深色地圖與風場粒子動畫。
+  原始碼：[BlueET1/AIot-HW1-CWA-web](https://github.com/BlueET1/AIot-HW1-CWA-web) ｜ 線上展示：<https://a-iot-hw-1-cwa.vercel.app/>
 - [ ] **天氣提醒 Line Bot**：結合 Line Messaging API，每日自動推播降雨與溫度提醒。
 - [ ] **旅遊推薦應用**：依照各地即時預報給予旅遊穿搭與出行建議。
 - [ ] **智慧農業 / 防災警訊**：低溫寒害或強降雨預警模型。

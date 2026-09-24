@@ -49,6 +49,18 @@ def upsert(df: pd.DataFrame):
     with get_conn() as conn:
         conn.executemany(sql, list(records))
 
+def prune_past_dates(today: str) -> int:
+    """
+    Delete forecasts for dates before today.
+
+    Upsert only inserts and updates, so without this the table keeps
+    accumulating expired dates and the dashboard shows yesterday's forecast
+    alongside the current week. Returns the number of rows removed.
+    """
+    with get_conn() as conn:
+        cur = conn.execute("DELETE FROM TemperatureForecasts WHERE dataDate < ?", (today,))
+        return cur.rowcount
+
 def verify_data() -> dict:
     """
     Run verification SQL queries as specified in Step 10 of workflow.md.

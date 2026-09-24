@@ -383,6 +383,9 @@ def main():
     database.init_db()
     database.upsert(df)
     print(f"已成功寫入 {len(df)} 筆資料至資料庫！")
+    removed = database.prune_past_dates(datetime.now().strftime("%Y-%m-%d"))
+    if removed:
+        print(f"已清除 {removed} 筆過期日期的舊預報。")
 
     print("\n>>> [Step 10] 執行 SQL 查詢驗證...")
     res = database.verify_data()
