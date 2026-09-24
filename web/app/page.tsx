@@ -124,7 +124,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex items-end justify-between gap-4 pb-5">
           <div className="pointer-events-auto">
             {selectedStation && (
               <StationDetailCard station={selectedStation} onRefresh={loadObservations} />

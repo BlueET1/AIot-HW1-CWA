@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Map as MapLibreMap,
-  NavigationControl,
   setWorkerUrl,
   type GeoJSONSource,
   type MapGeoJSONFeature,
@@ -81,7 +80,8 @@ export default function WeatherMap({
       zoom: 7,
       attributionControl: { compact: true },
     });
-    m.addControl(new NavigationControl({ showCompass: false }), "top-left");
+    // No NavigationControl: all four corners are taken by the overlay cards,
+    // and scroll/drag/pinch already cover zoom and pan.
 
     m.on("load", () => {
       m.addSource(STATIONS_SOURCE, {
@@ -181,7 +181,13 @@ export default function WeatherMap({
 
   return (
     <div className="absolute inset-0">
-      <div ref={containerRef} className="absolute inset-0" />
+      {/*
+        Inline styles, not Tailwind: MapLibre adds `.maplibregl-map` to this
+        element, and its unlayered `position: relative` beats Tailwind v4's
+        `.absolute` (which lives in @layer utilities - unlayered CSS always
+        wins over layered CSS). That collapsed the container to height 0.
+      */}
+      <div ref={containerRef} style={{ position: "absolute", inset: 0 }} />
       {map && showParticles && windGrid && <WindParticleLayer map={map} grid={windGrid} />}
     </div>
   );

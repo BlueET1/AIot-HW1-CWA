@@ -19,8 +19,12 @@ export interface WindGridData {
   v: number[]; // northward component, m/s
 }
 
-const BBOX = { lo1: 118.8, lo2: 122.5, la1: 26.2, la2: 21.4 }; // la1 > la2 (north -> south)
-const STEP = 0.3;
+// Wide enough to cover the whole viewport at the default zoom (~15° across),
+// so the particle field has no visible rectangular edge. Coarse spacing is
+// fine - synoptic wind is smooth, and this keeps the batched Open-Meteo
+// request (441 points) well inside its 1000-location limit.
+const BBOX = { lo1: 114, lo2: 130, la1: 31, la2: 15 }; // la1 > la2 (north -> south)
+const STEP = 0.8;
 
 function buildGridPoints(): { lats: number[]; lons: number[]; nx: number; ny: number } {
   const lons: number[] = [];
@@ -89,10 +93,10 @@ export function sampleWind(grid: WindGridData, lon: number, lat: number): [numbe
   const { header, u, v } = grid;
   const { lo1, la1, nx, ny, dx, dy } = header;
 
-  const fx = (lon - lo1) / dx;
-  const fy = (la1 - lat) / dy; // rows increase southward
-
-  if (fx < 0 || fx > nx - 1 || fy < 0 || fy > ny - 1) return [0, 0];
+  // Clamp rather than bail out: a particle just past the grid edge keeps
+  // drifting with the nearest wind instead of freezing in place.
+  const fx = Math.min(Math.max((lon - lo1) / dx, 0), nx - 1);
+  const fy = Math.min(Math.max((la1 - lat) / dy, 0), ny - 1); // rows increase southward
 
   const x0 = Math.floor(fx);
   const x1 = Math.min(x0 + 1, nx - 1);

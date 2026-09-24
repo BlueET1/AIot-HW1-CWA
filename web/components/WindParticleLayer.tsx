@@ -13,7 +13,10 @@ interface Particle {
 const PARTICLE_COUNT = 2200;
 const MAX_AGE = 90;
 const FADE_ALPHA = 0.06; // lower = longer trails
-const TIME_SCALE = 45; // artistic speed multiplier (wind sim is not real-time)
+// Simulated seconds of wind advection per animation frame. Real-time would be
+// imperceptible: at zoom 7 one pixel is ~1.1km, so a 5 m/s wind moves a
+// particle ~0.004px per frame. ~350 sim-seconds/frame gives ~1.5px/frame.
+const SIM_SECONDS_PER_FRAME = 350;
 
 // Web Mercator meters-per-pixel at a given latitude/zoom.
 function metersPerPixel(lat: number, zoom: number): number {
@@ -80,8 +83,8 @@ export default function WindParticleLayer({ map, grid }: { map: MapLibreMap; gri
         const lngLat = map.unproject([p.x, p.y]);
         const [u, v] = sampleWind(gridRef.current, lngLat.lng, lngLat.lat);
         const mpp = metersPerPixel(lngLat.lat, zoom) || 1;
-        const dx = ((u / mpp) * TIME_SCALE) / 60;
-        const dy = ((-v / mpp) * TIME_SCALE) / 60;
+        const dx = (u * SIM_SECONDS_PER_FRAME) / mpp;
+        const dy = (-v * SIM_SECONDS_PER_FRAME) / mpp;
 
         const nx = p.x + dx;
         const ny = p.y + dy;
